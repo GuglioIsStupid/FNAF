@@ -1,0 +1,6 @@
+<?xml version='1.0' encoding='utf-8'?>
+<TextureAtlas imagePath="leftdoorpanel.png"><SubTexture name="none0000" x="0" y="0" width="58" height="174" frameX="0" frameY="0" frameWidth="58" frameHeight="174" />
+<SubTexture name="door0000" x="58" y="0" width="58" height="174" frameX="0" frameY="0" frameWidth="58" frameHeight="174" />
+<SubTexture name="light0000" x="116" y="0" width="58" height="174" frameX="0" frameY="0" frameWidth="58" frameHeight="174" />
+<SubTexture name="both0000" x="174" y="0" width="58" height="174" frameX="0" frameY="0" frameWidth="58" frameHeight="174" />
+</TextureAtlas>

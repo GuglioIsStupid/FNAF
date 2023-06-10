@@ -1,0 +1,4 @@
+<?xml version='1.0' encoding='utf-8'?>
+<TextureAtlas imagePath="closetcam.png"><SubTexture name="bonnie0000" x="0" y="0" width="1600" height="720" frameX="0" frameY="0" frameWidth="1600" frameHeight="720" />
+<SubTexture name="nobonnie0000" x="0" y="720" width="1600" height="720" frameX="0" frameY="0" frameWidth="1600" frameHeight="720" />
+</TextureAtlas>

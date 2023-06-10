@@ -1,0 +1,9 @@
+<?xml version='1.0' encoding='utf-8'?>
+<TextureAtlas imagePath="stagecam.png"><SubTexture name="theboys0000" x="0" y="0" width="1600" height="720" frameX="0" frameY="0" frameWidth="1600" frameHeight="720" />
+<SubTexture name="uhoh0000" x="0" y="720" width="1600" height="720" frameX="0" frameY="0" frameWidth="1600" frameHeight="720" />
+<SubTexture name="chicgone0000" x="1600" y="0" width="1600" height="720" frameX="0" frameY="0" frameWidth="1600" frameHeight="720" />
+<SubTexture name="bothgone0000" x="1600" y="720" width="1600" height="720" frameX="0" frameY="0" frameWidth="1600" frameHeight="720" />
+<SubTexture name="feddysus0000" x="0" y="1440" width="1600" height="720" frameX="0" frameY="0" frameWidth="1600" frameHeight="720" />
+<SubTexture name="allgone0000" x="1600" y="1440" width="1600" height="720" frameX="0" frameY="0" frameWidth="1600" frameHeight="720" />
+<SubTexture name="bongone0000" x="0" y="2160" width="1600" height="720" frameX="0" frameY="0" frameWidth="1600" frameHeight="720" />
+</TextureAtlas>

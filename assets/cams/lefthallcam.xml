@@ -1,0 +1,35 @@
+<?xml version='1.0' encoding='utf-8'?>
+<TextureAtlas imagePath=".png"><SubTexture name="yourpizzaishere0000" x="0" y="0" width="1600" height="720" frameX="0" frameY="0" frameWidth="1600" frameHeight="720" />
+<SubTexture name="lightoff0000" x="0" y="720" width="1600" height="720" frameX="0" frameY="0" frameWidth="1600" frameHeight="720" />
+<SubTexture name="normal0000" x="1600" y="0" width="1600" height="720" frameX="0" frameY="0" frameWidth="1600" frameHeight="720" />
+<SubTexture name="foxycharge0000" x="0" y="0" width="1600" height="720" frameX="0" frameY="0" frameWidth="1600" frameHeight="720" />
+<SubTexture name="foxycharge0001" x="1600" y="720" width="1600" height="720" frameX="0" frameY="0" frameWidth="1600" frameHeight="720" />
+<SubTexture name="foxycharge0002" x="0" y="1440" width="1600" height="720" frameX="0" frameY="0" frameWidth="1600" frameHeight="720" />
+<SubTexture name="foxycharge0003" x="1600" y="1440" width="1600" height="720" frameX="0" frameY="0" frameWidth="1600" frameHeight="720" />
+<SubTexture name="foxycharge0004" x="0" y="2160" width="1600" height="720" frameX="0" frameY="0" frameWidth="1600" frameHeight="720" />
+<SubTexture name="foxycharge0005" x="1600" y="2160" width="1600" height="720" frameX="0" frameY="0" frameWidth="1600" frameHeight="720" />
+<SubTexture name="foxycharge0006" x="3200" y="0" width="1600" height="720" frameX="0" frameY="0" frameWidth="1600" frameHeight="720" />
+<SubTexture name="foxycharge0007" x="3200" y="720" width="1600" height="720" frameX="0" frameY="0" frameWidth="1600" frameHeight="720" />
+<SubTexture name="foxycharge0008" x="3200" y="1440" width="1600" height="720" frameX="0" frameY="0" frameWidth="1600" frameHeight="720" />
+<SubTexture name="foxycharge0009" x="3200" y="2160" width="1600" height="720" frameX="0" frameY="0" frameWidth="1600" frameHeight="720" />
+<SubTexture name="foxycharge0010" x="0" y="2880" width="1600" height="720" frameX="0" frameY="0" frameWidth="1600" frameHeight="720" />
+<SubTexture name="foxycharge0011" x="1600" y="2880" width="1600" height="720" frameX="0" frameY="0" frameWidth="1600" frameHeight="720" />
+<SubTexture name="foxycharge0012" x="3200" y="2880" width="1600" height="720" frameX="0" frameY="0" frameWidth="1600" frameHeight="720" />
+<SubTexture name="foxycharge0013" x="0" y="3600" width="1600" height="720" frameX="0" frameY="0" frameWidth="1600" frameHeight="720" />
+<SubTexture name="foxycharge0014" x="1600" y="3600" width="1600" height="720" frameX="0" frameY="0" frameWidth="1600" frameHeight="720" />
+<SubTexture name="foxycharge0015" x="3200" y="3600" width="1600" height="720" frameX="0" frameY="0" frameWidth="1600" frameHeight="720" />
+<SubTexture name="foxycharge0016" x="4800" y="0" width="1600" height="720" frameX="0" frameY="0" frameWidth="1600" frameHeight="720" />
+<SubTexture name="foxycharge0017" x="4800" y="720" width="1600" height="720" frameX="0" frameY="0" frameWidth="1600" frameHeight="720" />
+<SubTexture name="foxycharge0018" x="4800" y="1440" width="1600" height="720" frameX="0" frameY="0" frameWidth="1600" frameHeight="720" />
+<SubTexture name="foxycharge0019" x="4800" y="2160" width="1600" height="720" frameX="0" frameY="0" frameWidth="1600" frameHeight="720" />
+<SubTexture name="foxycharge0020" x="4800" y="2880" width="1600" height="720" frameX="0" frameY="0" frameWidth="1600" frameHeight="720" />
+<SubTexture name="foxycharge0021" x="4800" y="3600" width="1600" height="720" frameX="0" frameY="0" frameWidth="1600" frameHeight="720" />
+<SubTexture name="foxycharge0022" x="0" y="4320" width="1600" height="720" frameX="0" frameY="0" frameWidth="1600" frameHeight="720" />
+<SubTexture name="foxycharge0023" x="1600" y="4320" width="1600" height="720" frameX="0" frameY="0" frameWidth="1600" frameHeight="720" />
+<SubTexture name="foxycharge0024" x="3200" y="4320" width="1600" height="720" frameX="0" frameY="0" frameWidth="1600" frameHeight="720" />
+<SubTexture name="foxycharge0025" x="4800" y="4320" width="1600" height="720" frameX="0" frameY="0" frameWidth="1600" frameHeight="720" />
+<SubTexture name="foxycharge0026" x="0" y="5040" width="1600" height="720" frameX="0" frameY="0" frameWidth="1600" frameHeight="720" />
+<SubTexture name="foxycharge0027" x="1600" y="5040" width="1600" height="720" frameX="0" frameY="0" frameWidth="1600" frameHeight="720" />
+<SubTexture name="foxycharge0028" x="3200" y="5040" width="1600" height="720" frameX="0" frameY="0" frameWidth="1600" frameHeight="720" />
+<SubTexture name="foxycharge0029" x="4800" y="5040" width="1600" height="720" frameX="0" frameY="0" frameWidth="1600" frameHeight="720" />
+</TextureAtlas>

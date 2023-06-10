@@ -1,0 +1,14 @@
+<?xml version='1.0' encoding='utf-8'?>
+<TextureAtlas imagePath="leftdoor.png">
+<SubTexture name="door0000" x="979" y="0" width="194" height="471" frameX="-29" frameY="-28" frameWidth="223" frameHeight="720" />
+<SubTexture name="door0001" x="0" y="693" width="195" height="471" frameX="-28" frameY="-28" frameWidth="223" frameHeight="720" />
+<SubTexture name="door0002" x="195" y="693" width="195" height="467" frameX="-28" frameY="-32" frameWidth="223" frameHeight="720" />
+<SubTexture name="door0003" x="784" y="0" width="195" height="472" frameX="-28" frameY="-27" frameWidth="223" frameHeight="720" />
+<SubTexture name="door0004" x="390" y="693" width="195" height="467" frameX="-28" frameY="-32" frameWidth="223" frameHeight="720" />
+<SubTexture name="door0005" x="585" y="693" width="195" height="467" frameX="-28" frameY="-32" frameWidth="223" frameHeight="720" />
+<SubTexture name="door0006" x="780" y="693" width="196" height="467" frameX="-27" frameY="-32" frameWidth="223" frameHeight="720" />
+<SubTexture name="door0007" x="588" y="0" width="196" height="544" frameX="-27" frameY="-32" frameWidth="223" frameHeight="720" />
+<SubTexture name="door0008" x="392" y="0" width="196" height="625" frameX="-27" frameY="-32" frameWidth="223" frameHeight="720" />
+<SubTexture name="door0009" x="196" y="0" width="196" height="688" frameX="-27" frameY="-32" frameWidth="223" frameHeight="720" />
+<SubTexture name="door0010" x="0" y="0" width="196" height="693" frameX="-27" frameY="-27" frameWidth="223" frameHeight="720" />
+</TextureAtlas>

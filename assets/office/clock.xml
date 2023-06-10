@@ -1,0 +1,9 @@
+<?xml version='1.0' encoding='utf-8'?>
+<TextureAtlas imagePath="clock.png"><SubTexture name="10000" x="0" y="0" width="91" height="26" frameX="-6" frameY="0" frameWidth="100" frameHeight="26" />
+<SubTexture name="00000" x="0" y="26" width="91" height="26" frameX="-6" frameY="0" frameWidth="100" frameHeight="26" />
+<SubTexture name="20000" x="91" y="0" width="95" height="26" frameX="-2" frameY="0" frameWidth="100" frameHeight="26" />
+<SubTexture name="30000" x="91" y="26" width="95" height="26" frameX="-2" frameY="0" frameWidth="100" frameHeight="26" />
+<SubTexture name="40000" x="0" y="52" width="95" height="26" frameX="-2" frameY="0" frameWidth="100" frameHeight="26" />
+<SubTexture name="50000" x="0" y="78" width="95" height="26" frameX="-2" frameY="0" frameWidth="100" frameHeight="26" />
+<SubTexture name="60000" x="0" y="104" width="95" height="26" frameX="-2" frameY="0" frameWidth="100" frameHeight="26" />
+</TextureAtlas>

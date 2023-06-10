@@ -1,0 +1,12 @@
+<?xml version='1.0' encoding='utf-8'?>
+<TextureAtlas imagePath="cameraflip.png"><SubTexture name="monitorflip0000" x="1218" y="1899" width="902" height="74" frameX="-151" frameY="-646" frameWidth="1280" frameHeight="720" />
+<SubTexture name="monitorflip0001" x="0" y="2214" width="951" height="99" frameX="-151" frameY="-621" frameWidth="1280" frameHeight="720" />
+<SubTexture name="monitorflip0002" x="1014" y="1981" width="1003" height="157" frameX="-151" frameY="-563" frameWidth="1280" frameHeight="720" />
+<SubTexture name="monitorflip0003" x="0" y="1981" width="1014" height="233" frameX="-129" frameY="-487" frameWidth="1280" frameHeight="720" />
+<SubTexture name="monitorflip0004" x="1218" y="1431" width="1153" height="468" frameX="-69" frameY="-252" frameWidth="1280" frameHeight="720" />
+<SubTexture name="monitorflip0005" x="0" y="1431" width="1218" height="550" frameX="-32" frameY="-170" frameWidth="1280" frameHeight="720" />
+<SubTexture name="monitorflip0006" x="1280" y="720" width="1277" height="639" frameX="0" frameY="-81" frameWidth="1280" frameHeight="720" />
+<SubTexture name="monitorflip0007" x="0" y="720" width="1280" height="711" frameX="0" frameY="-9" frameWidth="1280" frameHeight="720" />
+<SubTexture name="monitorflip0008" x="0" y="0" width="1280" height="720" frameX="0" frameY="0" frameWidth="1280" frameHeight="720" />
+<SubTexture name="monitorflip0009" x="1280" y="0" width="1280" height="720" frameX="0" frameY="0" frameWidth="1280" frameHeight="720" />
+</TextureAtlas>

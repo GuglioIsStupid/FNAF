@@ -20,7 +20,21 @@ function doTweenX(tag, thing, pos, time, ease)
     if tweentags[tag] then
         Timer.cancel(tweentags[tag])
     end
-    tweentags[tag] = Timer.tween(time, thing, {x = pos}, ease)
+    tweentags[tag] = Timer.tween(time, thing, {x = pos}, ease, function() onTweenComplete(tag) end)
+end
+
+function doTweenY(tag, thing, pos, time, ease)
+    if tweentags[tag] then
+        Timer.cancel(tweentags[tag])
+    end
+    tweentags[tag] = Timer.tween(time, thing, {y = pos}, ease, function() onTweenComplete(tag) end)
+end
+
+function doTweenAlpha(tag, thing, a, time, ease)
+    if tweentags[tag] then
+        Timer.cancel(tweentags[tag])
+    end
+    tweentags[tag] = Timer.tween(time, thing, {alpha = a}, ease, function() onTweenComplete(tag) end)
 end
 
 util = {
@@ -45,7 +59,7 @@ local power = 101
 local powerDrain = true
 local bonniePos = 0
 local chicaPos = 0
-local foxyTime = 210
+local foxyTime = 210 -- 210
 local origFoxyTime = 180
 local foxyAttacking = false
 local leftLight = false
@@ -151,18 +165,6 @@ function onTimerCompleted(tag, loops, loopsLeft)
         end
         local bp = bonniePos
         if inCams then
-            -- first is xy, second is x2y2
-            -- cam1 912, 321 - 960, 352 stage
-            -- cam2 896, 385 - 944, 413 dining
-            -- cam3 849, 460 - 899, 492 foxy
-            -- cam4 908, 578 - 960, 617 lefthall
-            -- cam5 909, 617 - 957, 654 leftcorner
-            -- cam6 833, 551 - 882, 582 closet
-            -- cam7 999, 585 - 1048, 616 righthall
-            -- cam8 999, 624 - 1048, 655 rightcorner
-            -- cam9 800, 410 - 850, 442 backroom
-            -- cam10 1121, 536 - 1170, 567 kitchen
-            -- cam11 1120, 399 - 1169, 430 bathroom
             if bp == 1 then
                 if curcam == "stage" or curcam == "dining" then
                     doCamStatic()
@@ -207,6 +209,7 @@ function onTimerCompleted(tag, loops, loopsLeft)
                     light:stop()
                     leftlight = false
                     rightlight = false
+                    isbonniejump = true
     
                     runTimer('gameover', 5)
                     jumpscare:play()
@@ -216,7 +219,14 @@ function onTimerCompleted(tag, loops, loopsLeft)
                     beenJumpscared = true
                 end
             else
-    
+                bonniePos = 0
+                knock:setVolume(1 * officeVolume)
+                knock:play()
+                if inCams then
+                    if camera == "stage" then
+                        doCamStatic()
+                    end
+                end
             end
         end
     elseif tag == "chicamove" then
@@ -274,6 +284,7 @@ function onTimerCompleted(tag, loops, loopsLeft)
                         light:stop()
                         leftlight = false
                         rightlight = false
+                        ischicajump = true
         
                         runTimer('gameover', 5)
                         jumpscare:play()
@@ -283,9 +294,71 @@ function onTimerCompleted(tag, loops, loopsLeft)
                         beenJumpscared = true
                     end
                 end
+            else
+                chicaPos = 0
+                knock:setVolume(1 * officeVolume)
+                knock:play()
+                if inCams then
+                    if camera == "stage" then
+                        doCamStatic()
+                    end
+                end
             end
         end
     elseif tag == "foxyadvance" then
+        if inCams and camera < 3 or camera > 3 or not inCams then
+            foxyTime = foxyTime - 1
+        end
+
+        if foxyTime <= 0 then
+            runTimer('foxyattack', 2)
+        else
+            runTimer('foxyadvance', 1)
+        end
+    elseif tag == "foxyattack" then
+        foxyAttacking = true
+        lefthallcam:animate('foxyrun')
+        if inCams and curcam == "lefthall" then
+            doCamStatic()
+        end
+        runTimer("foxyarrive", 3)
+    elseif tag == "foxyarrive" then
+        foxyAttacking = false
+        if leftDoor then
+            knock:setVolume(1 * officeVolume)
+            knock:play()
+            foxyTime = origFoxyTime
+            if inCams and curcam == "piratecove" then
+                doCamStatic()
+            elseif inCams and curcam == "lefthall" and bp == 3 then
+                doCamStatic()
+            end
+        else
+            if not beenJumpscared then
+                if inCams then
+                    -- close cams and jumpscare
+                    cameraflip:animate('flipdown')
+                    camleave:play()
+                    camloop:stop()
+                    inCams = false
+                    showcamshit = false
+                end
+                phonecall:stop()
+                fan:stop()
+                ambience:stop()
+                light:stop()
+                leftlight = false
+                rightlight = false
+                isfoxyjump = true
+    
+                runTimer('gameover', 5)
+                jumpscare:play()
+    
+                foxyjump:animate("jumpscare")
+    
+                beenJumpscared = true
+            end
+        end
     elseif tag == "freddyarrive" then
         cancelTimer("chicamove")
         cancelTimer("bonniemove")
@@ -297,8 +370,25 @@ function onTimerCompleted(tag, loops, loopsLeft)
         freddyjump:animate("jumpscare")
         jumpscare:play()
         beenJumpscared = true
+        isfreddyjump = true
         runTimer('gameover', 1)
         music:stop()
+    elseif tag == 'clockupdate' then
+        time = time + 1
+
+        if time == 6 then -- 6am
+            light:stop()
+            ambience:stop()
+            fan:stop()
+            phonecall:stop()
+            music:stop()
+            victory:play()
+            runTimer('endgame', 16)
+            youwin = true
+            doTweenAlpha('black2', black2, 1, 1, 'linear')
+        else
+            runTimer('clockupdate', 90)
+        end
     end
 
     if tag == 'gameover' then
@@ -307,8 +397,40 @@ function onTimerCompleted(tag, loops, loopsLeft)
     end
 end
 
+function onTweenComplete(tag)
+    if tag == 'black2' then
+        doTweenAlpha('endbg', endbg, 1, 0.5, 'linear')
+        doTweenAlpha('5', _5, 1, 0.5, 'linear')
+
+        doTweenY('5down', _5, _5.y + 92, 7, 'linear')
+        doTweenY('6down', _6, _6.y + 92, 7, 'linear')
+    end
+
+    if tag == 'endbg' then
+        _6.alpha = 1
+    end
+
+    if tag == "5down" then 
+        kiddos:play()
+        runTimer('endstufffadeout', 3)
+        _5.alpha = 0
+    end
+end
+
 function cancelTimer(tag)
     Timer.cancel(tag)
+end
+
+function hex2rgb(hex)
+    hex = hex:gsub("#",""):gsub("0x","")
+    local r = hex:sub(1,2) 
+    local g = hex:sub(3,4)
+    local b = hex:sub(5,6)
+
+    hexR = tonumber("0x".. r)
+    hexG = tonumber("0x".. g)
+    hexB = tonumber("0x".. b)
+    return {hexR/255, hexG/255, hexB/255}
 end
 
 function love.load()
@@ -386,6 +508,10 @@ function love.load()
     freddyjump = Sprite()
     freddyjump:setFrames(getSparrow("assets/office/freddyjump"))
     freddyjump:addAnimByPrefix('jumpscare', "watchyotonemf", 24, false)
+
+    foxyjump = Sprite()
+    foxyjump:setFrames(getSparrow("assets/office/foxyjump"))
+    foxyjump:addAnimByPrefix('jumpscare', "yowhatspoppin", 24, false)
 
     -- cams image stuffs
     cambutton = Sprite()
@@ -482,6 +608,20 @@ function love.load()
     bathroomcam:addAnimByPrefix('chica2', "excuseme", 1, false)
     bathroomcam:addAnimByPrefix('freddy', "feddyinthegirlsroom", 1, false)
 
+    clock = Sprite()
+    clock:setFrames(getSparrow("assets/office/clock"))
+    clock:addAnimByPrefix('hour0', "0", 1, false)
+    clock:addAnimByPrefix('hour1', "1", 1, false)
+    clock:addAnimByPrefix('hour2', "2", 1, false)
+    clock:addAnimByPrefix('hour3', "3", 1, false)
+    clock:addAnimByPrefix('hour4', "4", 1, false)
+    clock:addAnimByPrefix('hour5', "5", 1, false)
+    clock:addAnimByPrefix('hour6', "6", 1, false)
+
+    clock.x, clock.y = 1170, 675
+
+    clock:animate("hour0")
+
     map = Sprite()
     map:setFrames(getSparrow("assets/cams/map"))
     map:addAnimByPrefix('stage', "stage", 1, false)
@@ -503,6 +643,29 @@ function love.load()
     powerusage:addAnimByPrefix('usage3', "3", 1, false)
     powerusage:addAnimByPrefix('usage4', "4", 1, false)
     powerusage:addAnimByPrefix('usage5', "5", 1, false)
+
+    endbg = Sprite()
+    endbg:load("assets/ending/Background.png")
+    endbg.alpha = 0
+
+    endbg.x, endbg.y = 400, 200
+
+    _5 = Sprite()
+    _5:load("assets/ending/5.png")
+    _5.alpha = 0
+    _5.x, _5.y = 400, 200
+    _6 = Sprite()
+    _6:load("assets/ending/6.png")
+    _6.x, _6.y = 400, 108
+    _6.alpha = 0
+
+    black2 = Sprite()
+    black2:makeGraphic(3840, 2160, "000000")
+    black2.alpha = 0
+
+    black = Sprite()
+    black:makeGraphic(3840, 2160, "000000")
+    black.alpha = 0
 
     usagetext = Sprite()
     usagetext:load("assets/office/usagetext.png")
@@ -569,6 +732,9 @@ function love.load()
     musicbox = love.audio.newSource("sounds/music box.ogg", "static")
     powerdown = love.audio.newSource("sounds/powerdown.ogg", "static")
     powerout = love.audio.newSource("sounds/powerdown.ogg", "static")
+    victory = love.audio.newSource("sounds/victory.ogg", "static")
+    kiddos = love.audio.newSource("sounds/kiddos.ogg", "static")
+    knock = love.audio.newSource("sounds/knock.ogg", "static")
 
     office:animate('default')
 
@@ -593,41 +759,41 @@ function love.load()
     ambience:play()
 
     abs = math.abs
-        new = complex.new
-        UpdateSpectrum = false
+    new = complex.new
+    UpdateSpectrum = false
 
-        wave_size=1
-        types=1
-        color = {0,200,0}
+    wave_size=1
+    types=1
+    color = {0,200,0}
 
-        Size = 1024
-        Frequency = 44100
-        length = Size / Frequency
+    Size = 1024
+    Frequency = 44100
+    length = Size / Frequency
 
-        function devide(list, factor)
-            for i,v in ipairs(list) do list[i] = list[i] * factor end
-        end
+    function devide(list, factor)
+        for i,v in ipairs(list) do list[i] = list[i] * factor end
+    end
 
-        function spectro_up(obj,sdata)
-            local MusicPos = obj:tell("samples") 
-            local MusicSize = sdata:getSampleCount() 
+    function spectro_up(obj,sdata)
+        local MusicPos = obj:tell("samples") 
+        local MusicSize = sdata:getSampleCount() 
                         
-            local List = {} 
-            for i= MusicPos, MusicPos + (Size-1) do
-                CopyPos = i
-                if i + 2048 > MusicSize then i = MusicSize/2 end 
+        local List = {} 
+        for i= MusicPos, MusicPos + (Size-1) do
+            CopyPos = i
+            if i + 2048 > MusicSize then i = MusicSize/2 end 
             
-                if sdata:getChannelCount()==1 then
-                    List[#List+1] = new(sdata:getSample(i), 0) 
-                else
-                    List[#List+1] = new(sdata:getSample(i*2), 0) 
-                end
-            
+            if sdata:getChannelCount()==1 then
+                List[#List+1] = new(sdata:getSample(i), 0) 
+            else
+                List[#List+1] = new(sdata:getSample(i*2), 0) 
             end
-            spectrum = fft(List, false) 
-            devide(spectrum, wave_size) 
-            UpdateSpectrum = true
+            
         end
+        spectrum = fft(List, false) 
+        devide(spectrum, wave_size) 
+        UpdateSpectrum = true
+    end
 
     function spectro_show()
         if UpdateSpectrum then
@@ -641,7 +807,6 @@ function love.load()
 
             -- determine an alpha value based on the loudest frequency
             local alpha = max / 64
-            print(alpha)
             feddyfezber.alpha = alpha
             feddyfezber:draw()
         end
@@ -654,7 +819,7 @@ function love.load()
     runTimer('foxyadvance', 1, 0)
     runTimer('chicamove', love.math.random(minChicaTime, maxChicaTime))
 
-    runTimer('clockupdate', 90, 0)
+    runTimer('clockupdate', 90)
     runTimer('camsleft', 5)
 
     officeCanvas = love.graphics.newCanvas(1280, 720)
@@ -683,7 +848,9 @@ function love.update(dt)
     bonniejump:update(dt)
     chicajump:update(dt)
     freddyjump:update(dt)
+    foxyjump:update(dt)
     powerusage:update(dt)
+    lefthallcam:update(dt)
 
     if not inCams then
         if mx < 540 then
@@ -702,12 +869,53 @@ function love.update(dt)
     rightdoors.offset.x = officeOffset
     feddyfezber.offset.x = officeOffset
 
-    globalUsage = 1 + (leftdoor and 1 or 0) + (rightdoor and 1 or 0) + (leftlight and 1 or 0) + (rightlight and 1 or 0) + (inCams and 1 or 0)
+    clock:animate("hour" .. time)
+
+    globalUsage = 1 + (leftDoor and 1 or 0) + (rightDoor and 1 or 0) + (leftlight and 1 or 0) + (rightlight and 1 or 0) + (inCams and 1 or 0)
     usageanim = "usage" .. globalUsage
     powerusage:animate(usageanim)
 
     if powerDrain then
         power = power - 0.045 * globalUsage * dt
+    end
+
+    if inCams then
+        -- first is xy, second is x2y2
+            -- cam1 912, 321 - 960, 352 stage
+            -- cam2 896, 385 - 944, 413 dining
+            -- cam3 849, 460 - 899, 492 foxy
+            -- cam4 908, 578 - 960, 617 lefthall
+            -- cam5 909, 617 - 957, 654 leftcorner
+            -- cam6 833, 551 - 882, 582 closet
+            -- cam7 999, 585 - 1048, 616 righthall
+            -- cam8 999, 624 - 1048, 655 rightcorner
+            -- cam9 800, 410 - 850, 442 backroom
+            -- cam10 1121, 536 - 1170, 567 kitchen
+            -- cam11 1120, 399 - 1169, 430 bathroom
+        
+            if curcam == "stage" then
+                camera = 1
+            elseif curcam == "dining" then
+                camera = 2
+            elseif curcam == "foxy" then
+                camera = 3
+            elseif curcam == "lefthall" then
+                camera = 4
+            elseif curcam == "leftcorner" then
+                camera = 5
+            elseif curcam == "closet" then
+                camera = 6
+            elseif curcam == "righthall" then
+                camera = 7
+            elseif curcam == "rightcorner" then
+                camera = 8
+            elseif curcam == "backroom" then
+                camera = 9
+            elseif curcam == "kitchen" then
+                camera = 10
+            elseif curcam == "bathroom" then
+                camera = 11
+            end
     end
 
     if power <= 0 and not outOfPower then
@@ -753,18 +961,18 @@ function love.update(dt)
     end
 
     -- left panel stuffs
-    if leftdoor and not leftlight then
+    if leftDoor and not leftlight then
         leftpanel:animate('door')
-    elseif leftlight and not leftdoor then
+    elseif leftlight and not leftDoor then
         leftpanel:animate('light')
-    elseif leftdoor and leftlight then
+    elseif leftDoor and leftlight then
         leftpanel:animate('both')
     else
         leftpanel:animate('none')
     end
 
     -- office light stuff
-    if not powerdown then
+    if not outOfPower then
         if leftlight then
             if bonniePos < 8 then
                 office:animate('leftlight')
@@ -790,28 +998,29 @@ function love.update(dt)
         light:stop()
     end
 
+
     -- office door stuff
-    if not leftdoor and leftdoors:getAnimName() ~= 'open' and leftdoors:getAnimName() ~= 'default' then
+    if not leftDoor and leftdoors:getAnimName() ~= 'open' and leftdoors:getAnimName() ~= 'default' then
         leftdoors:animate('open')
-    elseif leftdoor and leftdoors:getAnimName() ~= 'close' then
+    elseif leftDoor and leftdoors:getAnimName() ~= 'close' then
         leftdoors:animate('close')
     end
 
     -- right panel stuffs
-    if rightdoor and not rightlight then
+    if rightDoor and not rightlight then
         rightpanel:animate('door')
-    elseif rightlight and not rightdoor then
+    elseif rightlight and not rightDoor then
         rightpanel:animate('light')
-    elseif rightdoor and rightlight then
+    elseif rightDoor and rightlight then
         rightpanel:animate('both')
     else
         rightpanel:animate('none')
     end
 
     -- right door stuff
-    if not rightdoor and rightdoors:getAnimName() ~= 'open' and rightdoors:getAnimName() ~= 'default' then
+    if not rightDoor and rightdoors:getAnimName() ~= 'open' and rightdoors:getAnimName() ~= 'default' then
         rightdoors:animate('open')
-    elseif rightdoor and rightdoors:getAnimName() ~= 'close' then
+    elseif rightDoor and rightdoors:getAnimName() ~= 'close' then
         rightdoors:animate('close')
         door:play()
     end
@@ -871,11 +1080,23 @@ function love.update(dt)
     end
 
     if not foxyAttacking then
-        if bp == 3 then
-            lefthallcam:animate("bonnie")
-        else
-            lefthallcam:animate("normal")
+        if not foxyAttacking then
+            if bp == 3 then
+                lefthallcam:animate("bonnie")
+            else
+                lefthallcam:animate("normal")
+            end
         end
+    end
+
+    if foxyTime <= origFoxyTime / 3 * 2 and foxyTime > origFoxyTime / 3 then
+        piratecovecam:animate("stage1")
+    elseif foxyTime <= origFoxyTime / 3 and foxyTime > 0 then
+        piratecovecam:animate("stage2")
+    elseif foxyTime <= 0 then
+        piratecovecam:animate("gone")
+    else
+        piratecovecam:animate("normal")
     end
 
     if bp == 4 then
@@ -960,7 +1181,7 @@ function love.mousepressed(x, y, button, istouch)
         if leftpanel.x + leftpanel.offset.x + 12 < x and leftpanel.x + leftpanel.offset.x + 12 + 44 > x
             and leftpanel.y + 12 < y and leftpanel.y + 12 + 58 > y 
             and not leftdoors:isAnimated() then
-                leftdoor = not leftdoor
+                leftDoor = not leftDoor
                 door:stop()
                 door:play()
         end
@@ -976,7 +1197,7 @@ function love.mousepressed(x, y, button, istouch)
         if rightpanel.x - rightpanel.offset.x + 4 < x and rightpanel.x - rightpanel.offset.x + 4 + 44 > x
             and rightpanel.y + 12 < y and rightpanel.y + 12 + 58 > y 
             and not rightdoors:isAnimated() then
-                rightdoor = not rightdoor
+                rightDoor = not rightDoor
                 door:stop()
                 door:play()
         end
@@ -1098,9 +1319,21 @@ function love.draw()
 
     if canMute and phonecall:isPlaying() then muteButton:draw() end
 
+    clock:draw()
+
     if beenJumpscared then
-        if bonniejump:isAnimated() then bonniejump:draw() end
-        if chicajump:isAnimated() then chicajump:draw() end
-        if freddyjump:isAnimated() then freddyjump:draw() end
+        if isbonniejump then bonniejump:draw() end
+        if ischicajump then chicajump:draw() end
+        if isfreddyjump then freddyjump:draw() end
+        if isfoxyjump then foxyjump:draw() end
+    end
+
+    if youwin then
+        love.graphics.setColor(0,0,0,black2.alpha)
+        love.graphics.rectangle("fill", 0, 0, 1280, 720)
+        love.graphics.setColor(1,1,1)
+        _5:draw()
+        _6:draw()
+        endbg:draw()
     end
 end

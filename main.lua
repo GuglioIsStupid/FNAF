@@ -43,7 +43,7 @@ end
 local camera = 1
 local power = 101
 local powerDrain = true
-local bonniePos = 8
+local bonniePos = 0
 local chicaPos = 0
 local foxyTime = 210
 local origFoxyTime = 180
@@ -149,10 +149,9 @@ function onTimerCompleted(tag, loops, loopsLeft)
         else
             runTimer("bonniemove", love.math.random(minBonTime, maxBonTime))
         end
-
+        local bp = bonniePos
         if inCams then
-            local bp = bonniePos
- -- first is xy, second is x2y2
+            -- first is xy, second is x2y2
             -- cam1 912, 321 - 960, 352 stage
             -- cam2 896, 385 - 944, 413 dining
             -- cam3 849, 460 - 899, 492 foxy
@@ -190,6 +189,36 @@ function onTimerCompleted(tag, loops, loopsLeft)
                 end
             end
         end
+
+        if bp == 9 then
+            if not leftDoor then
+                if not beenJumpscared then
+                    if inCams then
+                        -- close cams and jumpscare
+                        cameraflip:animate('flipdown')
+                        camleave:play()
+                        camloop:stop()
+                        inCams = false
+                        showcamshit = false
+                    end
+                    phonecall:stop()
+                    fan:stop()
+                    ambience:stop()
+                    light:stop()
+                    leftlight = false
+                    rightlight = false
+    
+                    runTimer('gameover', 5)
+                    jumpscare:play()
+    
+                    bonniejump:animate("jumpscare")
+    
+                    beenJumpscared = true
+                end
+            else
+    
+            end
+        end
     elseif tag == "chicamove" then
         chicaPos = chicaPos + 1
         
@@ -200,7 +229,76 @@ function onTimerCompleted(tag, loops, loopsLeft)
         else
             runTimer("chicamove", love.math.random(minChicaTime, maxChicaTime))
         end
+
+        local cp = chicaPos
+
+        if inCams then
+            if cp == 1 then
+                if curcam == "stage" or curcam == "bathroom" then
+                    doCamStatic()
+                end
+            elseif cp == 2 or cp == 3 then
+                if curcam == "bathroom" then
+                    doCamStatic()
+                end
+            elseif cp == 4 or cp == 5 then
+                if curcam == "righthall" then
+                    doCamStatic()
+                end
+            elseif cp == 6 then
+                if curcam == "righthall" or curcam == "rightcorner" then
+                    doCamStatic()
+                end
+            elseif cp == 7 or cp == 8 or cp == 9 then
+                if curcam == "rightcorner" then
+                    doCamStatic()
+                end
+            end
+        end
+
+        if cp == 10 then
+            if not rightDoor then
+                if not inCams then
+                    if not beenJumpscared then
+                        if inCams then
+                            -- close cams and jumpscare
+                            cameraflip:animate('flipdown')
+                            camleave:play()
+                            camloop:stop()
+                            inCams = false
+                            showcamshit = false
+                        end
+                        phonecall:stop()
+                        fan:stop()
+                        ambience:stop()
+                        light:stop()
+                        leftlight = false
+                        rightlight = false
+        
+                        runTimer('gameover', 5)
+                        jumpscare:play()
+        
+                        chicajump:animate("jumpscare")
+
+                        beenJumpscared = true
+                    end
+                end
+            end
+        end
     elseif tag == "foxyadvance" then
+    elseif tag == "freddyarrive" then
+        cancelTimer("chicamove")
+        cancelTimer("bonniemove")
+        cancelTimer("foxyadvance")
+        cancelTimer("foxyattack")
+        runTimer('freddykill', love.math.random(freddyMin, freddyMax))
+        music:play()
+    elseif tag == "freddykill" then
+        freddyjump:animate("jumpscare")
+        jumpscare:play()
+        beenJumpscared = true
+        runTimer('gameover', 1)
+        music:stop()
     end
 
     if tag == 'gameover' then
@@ -209,11 +307,16 @@ function onTimerCompleted(tag, loops, loopsLeft)
     end
 end
 
+function cancelTimer(tag)
+    Timer.cancel(tag)
+end
+
 function love.load()
     -- load libs
     Object = require "lib.classic"
     Timer = require "lib.timer"
     xml = require "lib.xml".parse
+    require "lib.luafft"
 
     -- load modules
     Sprite = require "modules.Sprite"
@@ -230,6 +333,8 @@ function love.load()
     office:addAnimByPrefix('rightchica', "chicishere", 1, false)
     office:addAnimByPrefix('powerdown', 'powerout', 1, false)
     office:addAnimByPrefix('freddysing', 'urdead', 1, false)
+    feddyfezber = Sprite()
+    feddyfezber:load("assets/office/urdead0000.png")
 
     leftpanel = Sprite()
     leftpanel:setFrames(getSparrow("assets/office/leftdoorpanel"))
@@ -273,6 +378,14 @@ function love.load()
     bonniejump = Sprite()
     bonniejump:setFrames(getSparrow("assets/office/bonniejump"))
     bonniejump:addAnimByPrefix('jumpscare', "stubbingyourtoebelike", 36, true)
+
+    chicajump = Sprite()
+    chicajump:setFrames(getSparrow("assets/office/chicajump"))
+    chicajump:addAnimByPrefix('jumpscare', "GIMMEPIZZA", 36, true)
+
+    freddyjump = Sprite()
+    freddyjump:setFrames(getSparrow("assets/office/freddyjump"))
+    freddyjump:addAnimByPrefix('jumpscare', "watchyotonemf", 24, false)
 
     -- cams image stuffs
     cambutton = Sprite()
@@ -383,6 +496,24 @@ function love.load()
     map:addAnimByPrefix('kitchen', "kitchen", 1, false)
     map:addAnimByPrefix('bathroom', "bathrooms", 1, false)
 
+    powerusage = Sprite()
+    powerusage:setFrames(getSparrow("assets/office/usage"))
+    powerusage:addAnimByPrefix('usage1', "1", 1, false)
+    powerusage:addAnimByPrefix('usage2', "2", 1, false)
+    powerusage:addAnimByPrefix('usage3', "3", 1, false)
+    powerusage:addAnimByPrefix('usage4', "4", 1, false)
+    powerusage:addAnimByPrefix('usage5', "5", 1, false)
+
+    usagetext = Sprite()
+    usagetext:load("assets/office/usagetext.png")
+
+    powertext = Sprite()
+    powertext:load("assets/office/power.png")
+
+    powerusage.x, powerusage.y = 108, 676
+    usagetext.x, usagetext.y = 25, 686
+    powertext.x, powertext.y = 25, 650
+
     map.x, map.y = 800, 300
 
     stagecam:animate('normal')
@@ -435,12 +566,19 @@ function love.load()
     camselect = love.audio.newSource("sounds/camselect.ogg", "static")
     windowscare = love.audio.newSource("sounds/windowscare.ogg", "static")
     jumpscare = love.audio.newSource("sounds/jumpscare.ogg", "static")
+    musicbox = love.audio.newSource("sounds/music box.ogg", "static")
+    powerdown = love.audio.newSource("sounds/powerdown.ogg", "static")
+    powerout = love.audio.newSource("sounds/powerdown.ogg", "static")
 
     office:animate('default')
+
+    font = love.graphics.newFont("fonts/font.ttf", 42)
+    love.graphics.setFont(font)
 
     warpshader = love.graphics.newShader [[
         vec4 effect(vec4 color, Image texture, vec2 texture_coords, vec2 screen_coords)
         {
+            // TODO: Make fnaf fake 3d shader
             return Texel(texture, vec2(texture_coords.x, texture_coords.y));
         }
     ]]
@@ -453,6 +591,64 @@ function love.load()
     end)
     fan:play()
     ambience:play()
+
+    abs = math.abs
+        new = complex.new
+        UpdateSpectrum = false
+
+        wave_size=1
+        types=1
+        color = {0,200,0}
+
+        Size = 1024
+        Frequency = 44100
+        length = Size / Frequency
+
+        function devide(list, factor)
+            for i,v in ipairs(list) do list[i] = list[i] * factor end
+        end
+
+        function spectro_up(obj,sdata)
+            local MusicPos = obj:tell("samples") 
+            local MusicSize = sdata:getSampleCount() 
+                        
+            local List = {} 
+            for i= MusicPos, MusicPos + (Size-1) do
+                CopyPos = i
+                if i + 2048 > MusicSize then i = MusicSize/2 end 
+            
+                if sdata:getChannelCount()==1 then
+                    List[#List+1] = new(sdata:getSample(i), 0) 
+                else
+                    List[#List+1] = new(sdata:getSample(i*2), 0) 
+                end
+            
+            end
+            spectrum = fft(List, false) 
+            devide(spectrum, wave_size) 
+            UpdateSpectrum = true
+        end
+
+    function spectro_show()
+        if UpdateSpectrum then
+            -- go through the spectrum and determine which one is the loudest
+            local max = 0
+            for i=1, #spectrum do
+                if spectrum[i]:abs() > max then
+                    max = spectrum[i]:abs()
+                end
+            end
+
+            -- determine an alpha value based on the loudest frequency
+            local alpha = max / 64
+            print(alpha)
+            feddyfezber.alpha = alpha
+            feddyfezber:draw()
+        end
+    end
+
+    musicData = love.sound.newSoundData("sounds/music box.ogg")
+    music = love.audio.newSource(musicData, "stream")
 
     runTimer('bonniemove', love.math.random(minBonTime, maxBonTime))
     runTimer('foxyadvance', 1, 0)
@@ -469,6 +665,9 @@ officeOffset = 0
 function love.update(dt)
     Timer.update(dt)
     local mx, my = love.mouse.getPosition()
+    if powerdown then
+        spectro_up(music, musicData)
+    end
 
     -- update sprites
     office:update(dt)
@@ -482,7 +681,9 @@ function love.update(dt)
     static:update(dt)
     map:update(dt)
     bonniejump:update(dt)
-    --chicajump:update(dt)
+    chicajump:update(dt)
+    freddyjump:update(dt)
+    powerusage:update(dt)
 
     if not inCams then
         if mx < 540 then
@@ -499,9 +700,56 @@ function love.update(dt)
     rightpanel.offset.x = officeOffset
     leftdoors.offset.x = officeOffset
     rightdoors.offset.x = officeOffset
+    feddyfezber.offset.x = officeOffset
+
+    globalUsage = 1 + (leftdoor and 1 or 0) + (rightdoor and 1 or 0) + (leftlight and 1 or 0) + (rightlight and 1 or 0) + (inCams and 1 or 0)
+    usageanim = "usage" .. globalUsage
+    powerusage:animate(usageanim)
 
     if powerDrain then
-        power = power - 0.001 * globalUsage * dt
+        power = power - 0.045 * globalUsage * dt
+    end
+
+    if power <= 0 and not outOfPower then
+        outOfPower = true
+        cancelTimer('bonniemove')
+        cancelTimer('foxyadvance')
+        cancelTimer('chicamove')
+        
+        canUseLeftDoor = false
+        canUseRightDoor = false
+        canUseLeftLight = false
+        canUseRightLight = false
+
+        gonnafuckingdie = true
+
+        if inCams then
+            -- close cams and jumpscare
+            cameraflip:animate('flipdown')
+            camleave:play()
+            camloop:stop()
+            inCams = false
+            showcamshit = false
+        end
+        phonecall:stop()
+        fan:stop()
+        ambience:stop()
+        light:stop()
+        leftlight = false
+        rightlight = false
+        office:animate("powerdown")
+        powerout:play()
+
+        if leftDoor then
+            leftdoors:animate("open")
+            door:play()
+        end
+        if rightDoor then
+            rightdoors:animate("open")
+            door:play()
+        end
+
+        runTimer('freddyarrive', 8)
     end
 
     -- left panel stuffs
@@ -516,20 +764,22 @@ function love.update(dt)
     end
 
     -- office light stuff
-    if leftlight then
-        if bonniePos < 8 then
-            office:animate('leftlight')
-        elseif bonniePos >= 8 then
-            office:animate('leftbonnie')
+    if not powerdown then
+        if leftlight then
+            if bonniePos < 8 then
+                office:animate('leftlight')
+            elseif bonniePos >= 8 then
+                office:animate('leftbonnie')
+            end
+        elseif rightlight then
+            if chicaPos < 9 then
+                office:animate('rightlight')
+            elseif chicaPos >= 9 then
+                office:animate('rightchica')
+            end
+        else
+            office:animate('default')
         end
-    elseif rightlight then
-        if chicaPos < 9 then
-            office:animate('rightlight')
-        elseif chicaPos >= 9 then
-            office:animate('rightchica')
-        end
-    else
-        office:animate('default')
     end
 
     if leftlight or rightlight then
@@ -685,36 +935,6 @@ function love.update(dt)
         beenScared = true
         windowscare:play()
     end
-
-    if bp == 9 then
-        if not leftDoor then
-            if not beenJumpscared then
-                if inCams then
-                    -- close cams and jumpscare
-                    cameraflip:animate('flipdown')
-                    camleave:play()
-                    camloop:stop()
-                    inCams = false
-                    showcamshit = false
-                end
-                phonecall:stop()
-                fan:stop()
-                ambience:stop()
-                light:stop()
-                leftlight = false
-                rightlight = false
-
-                runTimer('gameover', 5)
-                jumpscare:play()
-
-                bonniejump:animate("jumpscare")
-
-                beenJumpscared = true
-            end
-        else
-
-        end
-    end
 end
 
 function love.mousepressed(x, y, button, istouch)
@@ -846,6 +1066,7 @@ function love.draw()
     love.graphics.setShader(warpshader) 
         love.graphics.draw(officeCanvas, 0, 0, 0, 1, 1)
     love.graphics.setShader()
+    spectro_show()
     leftdoors:draw()
     rightdoors:draw()
     leftpanel:draw()
@@ -867,12 +1088,19 @@ function love.draw()
         static:draw()
         map:draw()
     end
-    cambutton:draw()
+    if not gonnafuckingdie then
+        cambutton:draw()
+        powerusage:draw()
+        usagetext:draw()
+        powertext:draw()
+        love.graphics.print(math.floor(power), 175, 644)
+    end
 
     if canMute and phonecall:isPlaying() then muteButton:draw() end
 
     if beenJumpscared then
         if bonniejump:isAnimated() then bonniejump:draw() end
-        --if chicajump:isAnimated() then chicajump:draw() end
+        if chicajump:isAnimated() then chicajump:draw() end
+        if freddyjump:isAnimated() then freddyjump:draw() end
     end
 end
